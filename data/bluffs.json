@@ -1,0 +1,18 @@
+{
+  "bluffs": [
+    {
+      "game": 1,
+      "round": 2,
+      "player": 3,
+      "startFrame": 45,
+      "endFrame": 196
+    },
+    {
+      "game": 1,
+      "round": 3,
+      "player": 4,
+      "startFrame": 245,
+      "endFrame": 204
+    }
+  ]
+}
