@@ -1,70 +1,83 @@
 import csv
 import os
-import cv2
 import subprocess
+import progressbar
+import cv2
 
-def process_info(csv_info):
-    # get video filepath
-    filepath = get_filepath(csv_info)
+DATA_DIR = '../data'
+
+
+def process_clip(row):
+    # get video file_path
+    file_path = get_file_path(row)
 
     # check file exists
-    if os.path.exists(filepath):
-        extract_frames_and_make_vid(filepath,csv_info)
-
-
-def get_filepath(csv_info):
-    filename = 'G' + csv_info[1] + 'R' + csv_info[2]
-    filepath = 'data/videos/' + csv_info[3] + '/' + filename
-    if os.path.exists(filepath + '.mov'):
-        filepath = filepath + '.mov'
+    if os.path.exists(file_path):
+        extract_frames_and_make_vid(file_path, row)
     else:
-        filepath = filepath + '.mp4'
-    return filepath
+        raise FileNotFoundError(file_path)
 
-def extract_frames_and_make_vid(filepath, csv_info):
+
+def get_file_path(csv_info):
+    filename = 'G' + csv_info[1] + 'R' + csv_info[2]
+    file_path = os.path.join(DATA_DIR, 'videos', csv_info[3], filename)
+    if os.path.exists(file_path + '.mov'):
+        file_path = file_path + '.mov'
+    else:
+        file_path = file_path + '.mp4'
+    return file_path
+
+
+def extract_frames_and_make_vid(file_path, csv_info):
     clip_id = csv_info[0]
     start_frame = int(csv_info[4])
     end_frame = start_frame + 149
-    output_folder = 'data/frames/' + clip_id + '/'
+    output_folder = os.path.join(DATA_DIR, 'frames', clip_id)
 
     # make output folder for frames if doesn't exist
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
 
-    vid_cap = cv2.VideoCapture(filepath)
+    vid_cap = cv2.VideoCapture(file_path)
 
     # iterate through all frames
     count = 0
-    success,image = vid_cap.read()
+    success, image = vid_cap.read()
     while success:
-        success,image = vid_cap.read()
+        success, image = vid_cap.read()
         # save frame if between start and end frame
-        if count >= start_frame and count <= end_frame:
-            cv2.imwrite(output_folder + str(count) + '.jpg', image)
+        if start_frame <= count <= end_frame:
+            cv2.imwrite(os.path.join(output_folder, "{:05d}.jpg".format(count)), image)
         elif count > end_frame:
-            break;
+            break
         count += 1
 
     # save video from extracted frames folder
-    make_vid(output_folder, clip_id, start_frame)
+    make_vid(output_folder, clip_id)
 
-def make_vid(imgs_folder, clip_id, start_frame):
+
+def make_vid(imgs_folder, clip_id):
+    devnull = open(os.devnull, 'w')
+
     # create output video folder
-    output_video_folder = 'data/trimmed/'
+    output_video_folder = os.path.join(DATA_DIR, 'trimmed')
     if not os.path.exists(output_video_folder):
         os.makedirs(output_video_folder)
 
     # set output video name
-    video_filepath = output_video_folder + clip_id
+    video_file_path = os.path.join(output_video_folder, clip_id)
 
-    # save video from iamges
+    # save video from images
     subprocess.call(
-        'ffmpeg -pattern_type glob -framerate 30 -i "%s*.jpg" %s.mp4' % (imgs_folder,video_filepath),
-        shell=True)
+        'ffmpeg -pattern_type glob -framerate 30 -i "{}/*.jpg" {}.mp4'.format(imgs_folder, video_file_path),
+        shell=True,
+        stdout=devnull)
 
 
 if __name__ == '__main__':
-    with open('bluff_data.csv', 'rb') as csvfile:
-        csvreader = csv.reader(csvfile, delimiter=',')
-        for row in csvreader:
-            process_info(row)
+    with open('../data/bluff_data.csv') as file:
+        reader = csv.reader(file, delimiter=',')
+        next(reader) # skip header row
+        bar = progressbar.ProgressBar()
+        for row in bar(reader):
+            process_clip(row)
