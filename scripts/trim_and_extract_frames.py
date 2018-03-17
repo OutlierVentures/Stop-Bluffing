@@ -75,7 +75,7 @@ def make_vid(imgs_folder, clip_id):
 
     # save video from images
     subprocess.call(
-        'ffmpeg -pattern_type glob -framerate 30 -i "{}/*.jpg" {}.mp4'.format(imgs_folder, video_file_path),
+        'ffmpeg -loglevel panic -pattern_type glob -framerate 30 -i "{}/*.jpg" {}.mp4'.format(imgs_folder, video_file_path),
         shell=True,
         stdout=devnull)
 
