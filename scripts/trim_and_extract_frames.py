@@ -5,6 +5,7 @@ import progressbar
 import cv2
 
 DATA_DIR = '../data'
+FRAMES = 150
 
 
 def process_clip(row):
@@ -31,12 +32,17 @@ def get_file_path(csv_info):
 def extract_frames_and_make_vid(file_path, csv_info):
     clip_id = csv_info[0]
     start_frame = int(csv_info[4])
-    end_frame = start_frame + 149
+    end_frame = start_frame + (FRAMES - 1)
     output_folder = os.path.join(DATA_DIR, 'frames', clip_id)
 
     # make output folder for frames if doesn't exist
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
+    else:
+        file_count = len([name for name in os.listdir(output_folder) if os.path.isfile(name)])
+        # Skip clips that have already been processed
+        if file_count == FRAMES:
+            return
 
     vid_cap = cv2.VideoCapture(file_path)
 
@@ -77,7 +83,7 @@ def make_vid(imgs_folder, clip_id):
 if __name__ == '__main__':
     with open('../data/bluff_data.csv') as file:
         reader = csv.reader(file, delimiter=',')
-        next(reader) # skip header row
+        next(reader)  # skip header row
         bar = progressbar.ProgressBar()
         for row in bar(reader):
             process_clip(row)
