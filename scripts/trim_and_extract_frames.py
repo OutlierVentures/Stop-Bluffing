@@ -39,7 +39,7 @@ def extract_frames_and_make_vid(file_path, csv_info):
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
     else:
-        file_count = len([name for name in os.listdir(output_folder) if os.path.isfile(name)])
+        file_count = len([name for name in os.listdir(output_folder) if os.path.isfile(os.path.join(output_folder, name))])
         # Skip clips that have already been processed
         if file_count == FRAMES:
             return
