@@ -32,4 +32,5 @@ RUN chmod -R a+w /workspace
 RUN git clone https://github.com/1adrianb/face-alignment
 WORKDIR /workspace/face-alignment
 RUN pip install -r requirements.txt
+RUN pip install opencv-python progressbar2
 RUN python setup.py install
