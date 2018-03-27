@@ -27,7 +27,7 @@ def load(loso=0):
     for i, path in bar(enumerate(landmark_paths)):
         data = json.load(open(path))
         clipid_det = int(os.path.splitext(os.path.basename(path))[0])
-        playerID = loso_loading(clipid_det);
+        playerID = loso_loading(clipid_det)
 
         if(playerID !=loso):
             clip_ids[i] = int(os.path.splitext(os.path.basename(path))[0])
