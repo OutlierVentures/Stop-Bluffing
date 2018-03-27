@@ -4,10 +4,10 @@ import os
 import glob
 import progressbar
 import numpy as np
+from random import randint
 
 LANDMARKS_DIR = 'landmarks'
 np.random.seed(7)
-
 
 def load(loso=0):
     """
@@ -26,7 +26,12 @@ def load(loso=0):
     bar = progressbar.ProgressBar(max_value=nb_samples)
     for i, path in bar(enumerate(landmark_paths)):
         data = json.load(open(path))
-        clip_ids[i] = int(os.path.splitext(os.path.basename(path))[0])
+        clipid_det = int(os.path.splitext(os.path.basename(path))[0])
+        playerID = loso_loading(clipid_det);
+
+        if(playerID !=loso):
+            clip_ids[i] = int(os.path.splitext(os.path.basename(path))[0])
+
         for t, frame in enumerate(data):
             x[i, t, :, :] = np.array(frame[1])
 
@@ -67,5 +72,16 @@ def __load_labels__(clip_ids):
 
     for i, clip_id in enumerate(clip_ids):
         y[i] = label_map[clip_id]
+
+    return y
+
+def loso_processing(clip_ids):
+    y = 0;
+    with open('data/bluff_data.csv') as f:
+        reader = csv.DictReader(f)
+
+        for row in reader:
+            if(int(row['clipId']) == clip_ids):
+                y = row['playerID']
 
     return y
