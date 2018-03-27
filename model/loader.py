@@ -4,6 +4,7 @@ import os
 import glob
 import progressbar
 import numpy as np
+import sklearn.preprocessing
 
 LANDMARKS_DIR = 'landmarks'
 np.random.seed(7)
@@ -32,10 +33,21 @@ def load(loso=0):
 
     y = __load_labels__(clip_ids)
 
+    # Normalize input
+    x = normalize(x)
+
     # Unison shuffle
     idx = np.random.permutation(nb_samples)
 
     return x[idx], y[idx]
+
+
+def normalize(x):
+    nb_samples = x.shape[0]
+    x_new = x.reshape((-1, 3))
+    norm = sklearn.preprocessing.normalize(x_new)
+
+    return norm.reshape((nb_samples, 150, 68, 3))
 
 
 def split_data(x, y):
