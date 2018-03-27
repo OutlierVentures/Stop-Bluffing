@@ -32,7 +32,7 @@ def train(args):
 
     model.fit(x_train, y_train,
               epochs=50,
-              batch_size=16,
+              batch_size=1,
               validation_data=(x_val, y_val),
               callbacks=[early_stopping])
 

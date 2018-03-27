@@ -69,7 +69,7 @@ def split_data(x, y):
 
 
 def __load_labels__(clip_ids):
-    y = np.zeros(len(clip_ids), dtype=np.uint8)
+    y = np.zeros(len(clip_ids))
     label_map = {}
     with open('data/bluff_data.csv') as f:
         reader = csv.DictReader(f)
