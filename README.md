@@ -22,3 +22,15 @@ sudo nvidia-docker run -it \
 cd /stop-bluffing
 python test/test_face_alignment.py
 ```
+
+## Train model
+
+```
+python train.py [model]
+```
+
+For example, to train the MLP model:
+
+```
+python train.py mlp
+```
