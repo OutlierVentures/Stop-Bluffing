@@ -24,7 +24,7 @@ def to_fisher(x, k=3):
         for j in range(nb_landmarks):
             xx = x[i, :, j, :]
 
-            gmm = GaussianMixture(n_components=3, covariance_type='diag')
+            gmm = GaussianMixture(n_components=k, covariance_type='diag')
             gmm.fit(xx)
 
             fv[i, j, :] = fisher_vector.fisher_vector(xx, gmm)
