@@ -1,5 +1,23 @@
 import matplotlib.pyplot as plt
+import os
+import progressbar
 from mpl_toolkits.mplot3d import Axes3D
+
+
+def vis_many_face_landmarks(landmarks):
+    """
+    Visualises sequence of facial landmarks
+    Saves the figures to a directory
+
+    :param landmarks: Shape (t, 68, 3)
+    :return:
+    """
+    output_dir = 'tmp'
+    print("Writing output to {}".format(output_dir))
+    bar = progressbar.ProgressBar()
+    for t in bar(range(landmarks.shape[0])):
+        fig = vis_face_landmarks(landmarks[t, :, :])
+        fig.savefig(os.path.join(output_dir, '{}.png'.format(t)))
 
 
 def vis_face_landmarks(landmarks):
@@ -18,17 +36,23 @@ def vis_face_landmarks(landmarks):
 
     ax = fig.add_subplot(1, 2, 2, projection='3d')
     surf = ax.scatter(landmarks[:, 0] * 1.2, landmarks[:, 1], landmarks[:, 2], c="cyan", alpha=1.0, edgecolor='b')
-    ax.plot3D(landmarks[:17, 0] * 1.2, landmarks[:17, 1], landmarks[:17, 2], color='blue')
+    # Face outline
+    ax.plot3D(landmarks[:17, 0] * 1.2, landmarks[:17, 1], landmarks[:17, 2], color='green')
     ax.plot3D(landmarks[17:22, 0] * 1.2, landmarks[17:22, 1], landmarks[17:22, 2], color='blue')
     ax.plot3D(landmarks[22:27, 0] * 1.2, landmarks[22:27, 1], landmarks[22:27, 2], color='blue')
     ax.plot3D(landmarks[27:31, 0] * 1.2, landmarks[27:31, 1], landmarks[27:31, 2], color='blue')
     ax.plot3D(landmarks[31:36, 0] * 1.2, landmarks[31:36, 1], landmarks[31:36, 2], color='blue')
+    # L Eye
     ax.plot3D(landmarks[36:42, 0] * 1.2, landmarks[36:42, 1], landmarks[36:42, 2], color='blue')
+    # R Eye
     ax.plot3D(landmarks[42:48, 0] * 1.2, landmarks[42:48, 1], landmarks[42:48, 2], color='blue')
+    # Mouth
     ax.plot3D(landmarks[48:, 0] * 1.2, landmarks[48:, 1], landmarks[48:, 2], color='blue')
 
     ax.view_init(elev=90., azim=90.)
     ax.set_xlim(ax.get_xlim()[::-1])
+
+    return fig
 
 
 def plot_histogram(x):
