@@ -19,6 +19,22 @@ def mlp(input_shape):
     return model
 
 
+def mlp_fisher(input_shape):
+    """
+    MLP variant which takes Fisher Vector as input
+    :param input_shape:
+    :return:
+    """
+    model = Sequential()
+    model.add(Flatten(input_shape=input_shape))
+    model.add(Dense(1024, activation='relu'))
+    model.add(Dropout(0.2))
+    model.add(Dense(1024, activation='relu'))
+    model.add(Dropout(0.2))
+    __add_output__(model)
+
+    return model
+
 def cnn_rnn(input_shape):
     nb_frames, nb_landmarks, _ = input_shape
     model = Sequential()
