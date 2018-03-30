@@ -2,3 +2,4 @@ progressbar2
 tensorflow
 keras
 numpy
+sklearn

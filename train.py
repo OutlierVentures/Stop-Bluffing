@@ -1,42 +1,75 @@
 import argparse
+from collections import Counter
 from keras import losses
 from keras import callbacks
-
 from model import architecture, loader, evaluate
 
 
-def get_model(name):
+def get_model(name, input_shape):
+    """"
+    Retrieve model architecture depending on cmd args
+    """
     if name == 'mlp':
-        return architecture.mlp()
+        return architecture.mlp(input_shape)
     if name == 'cnn_rnn':
-        return architecture.cnn_rnn()
-    else:
-        raise ValueError('Model {} is not defined'.format(name))
+        return architecture.cnn_rnn(input_shape)
+    raise ValueError('Model {} is not defined'.format(name))
+
+
+def get_class_weights(y):
+    """
+    Determine class weights based on frequency distribution of labels
+
+    :param y:
+    :return:
+    """
+    counter = Counter(y)
+    majority = max(counter.values())
+    return {cls: float(majority/count) for cls, count in counter.items()}
 
 
 def train(args):
     x, y = loader.load()
+    # x = loader.compact_frames(x, window_size=5, step_size=2)
+    nb_samples, nb_frames, nb_landmarks, _ = x.shape
     x_train, y_train, x_val, y_val = loader.split_data(x, y)
 
-    model = get_model(args.model)
+    input_shape = (nb_frames, nb_landmarks, 3)
+    model = get_model(args.model, input_shape=input_shape)
 
+    print("Input shape: {}".format(x.shape))
     print(model.summary())
 
     model.compile(optimizer='adam',
                   loss=losses.binary_crossentropy,
                   metrics=['accuracy'])
 
-    early_stopping = callbacks.EarlyStopping(monitor='val_loss',
-                            min_delta=0,
-                            patience=5)
+    checkpointer = callbacks.ModelCheckpoint(filepath="data/weights.hdf5", verbose=1, save_best_only=True)
+    early_stopping = callbacks.EarlyStopping(monitor='val_loss', min_delta=0, patience=2)
 
+    class_weights = get_class_weights(y_train)
     model.fit(x_train, y_train,
               epochs=50,
-              batch_size=16,
+              batch_size=8,
               validation_data=(x_val, y_val),
-              callbacks=[early_stopping])
+              callbacks=[
+                  checkpointer,
+                  early_stopping,
+              ],
+              class_weight=class_weights,
+              )
+
+    # Load best model
+    model.load_weights('data/weights.hdf5')
 
     # Print evaluation matrix
+    train_score = model.evaluate(x_train, y_train)
+    val_score = model.evaluate(x_val, y_val)
+
+    print(model.metrics_names, train_score, val_score)
+
+    # FIXME: Change back to validation
+    evaluate.evaluate(model, x_train, y_train)
     evaluate.evaluate(model, x_val, y_val)
 
 
