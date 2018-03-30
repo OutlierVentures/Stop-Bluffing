@@ -5,7 +5,8 @@ from sklearn.metrics import confusion_matrix
 
 
 def evaluate(model, x_test, y_test):
-    y_pred = model.predict(x_test)
+    y_pred = model.predict(x_test).flatten()
+    print(y_pred)
     y_pred = np.round(y_pred).astype(np.uint8)
 
     cnf_matrix = confusion_matrix(y_test, y_pred)
@@ -35,11 +36,6 @@ def plot_confusion_matrix(cm, classes, axes,
     """
     if normalize:
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-        print("Normalized confusion matrix")
-    else:
-        print('Confusion matrix, without normalization')
-
-    print(cm)
 
     plt.sca(axes)
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
