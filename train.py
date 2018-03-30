@@ -2,7 +2,7 @@ import argparse
 from collections import Counter
 from keras import losses
 from keras import callbacks
-from model import architecture, loader, evaluate
+from model import architecture, loader, evaluate, preprocessing
 
 
 def get_model(name, input_shape):
@@ -11,6 +11,8 @@ def get_model(name, input_shape):
     """
     if name == 'mlp':
         return architecture.mlp(input_shape)
+    if name == 'mlp_fv':
+        return architecture.mlp_fisher(input_shape)
     if name == 'cnn_rnn':
         return architecture.cnn_rnn(input_shape)
     raise ValueError('Model {} is not defined'.format(name))
@@ -30,11 +32,17 @@ def get_class_weights(y):
 
 def train(args):
     x, y = loader.load()
+
+    if args.model == 'mlp_fv':
+        x = preprocessing.to_fisher(x)
+        nb_samples, nb_landmarks, l = x.shape
+        input_shape = (nb_landmarks, l)
+    else:
+        nb_samples, nb_frames, nb_landmarks, _ = x.shape
+        input_shape = (nb_frames, nb_landmarks, 3)
     # x = loader.compact_frames(x, window_size=5, step_size=2)
-    nb_samples, nb_frames, nb_landmarks, _ = x.shape
     x_train, y_train, x_val, y_val = loader.split_data(x, y)
 
-    input_shape = (nb_frames, nb_landmarks, 3)
     model = get_model(args.model, input_shape=input_shape)
 
     print("Input shape: {}".format(x.shape))
@@ -68,7 +76,6 @@ def train(args):
 
     print(model.metrics_names, train_score, val_score)
 
-    # FIXME: Change back to validation
     evaluate.evaluate(model, x_train, y_train)
     evaluate.evaluate(model, x_val, y_val)
 
