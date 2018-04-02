@@ -8,7 +8,7 @@ from model import evaluate
 
 
 def train():
-    x, y = loader.load()
+    x, y = loader.load_sum()
 
     x_train, y_train, x_val, y_val = loader.split_data(x, y)
 

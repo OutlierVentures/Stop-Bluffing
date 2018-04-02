@@ -7,11 +7,30 @@ import numpy as np
 DATA_PATH = 'data/labelled_au.csv'
 FRAMES_PER_CLIP = 150
 
+np.random.seed(7)
+
+
+def load_sum():
+    """
+    Sum binary features across time axis
+    :return:
+    """
+    x, y = load()
+
+    binary_x = x[:, :, 17:35]
+
+    sum_x = np.sum(binary_x, axis=1)
+
+    # Normalise by number of frames
+    sum_x /= FRAMES_PER_CLIP
+
+    return sum_x, y
+
 
 def load(shuffle=True):
     nb_lines = len(open(DATA_PATH).readlines()) - 1  # Subtract 1 for header
     nb_samples = nb_lines // FRAMES_PER_CLIP
-    x = np.zeros((nb_samples, 150, 36))
+    x = np.zeros((nb_samples, 150, 35))
     y = np.zeros(nb_samples)
     with open(DATA_PATH) as f:
         reader = csv.DictReader(f)
@@ -23,7 +42,7 @@ def load(shuffle=True):
             if frame_idx == 0:
                 y[sample_idx] = row['isBluffing']
 
-            x[sample_idx, frame_idx] = list(row.values())[1:37]
+            x[sample_idx, frame_idx] = list(row.values())[1:36]
 
     # Unison shuffle
     if shuffle:
