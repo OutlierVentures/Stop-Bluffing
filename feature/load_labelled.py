@@ -7,14 +7,7 @@ import numpy as np
 FRAMES_PER_CLIP = 150
 DATA_PATH = 'data/labelled_au.csv'
 
-def read_labelled(au_type="(r|c)", filename=DATA_PATH):
-	labelled = pandas.read_csv(filename, sep='\s*,\s*', engine='python')
-
-	# player_out = randint(0,5)
-	player_out = 0
-	loso = labelled[labelled.playerId != player_out]
-	loso = loso.reset_index(drop=True)
-
+def loso_splitter(loso, player_out, au_type, filename):
 	au_samples = []
 	isBluffing_samples = []
 	isBluffing_df = loso['isBluffing']
@@ -32,6 +25,22 @@ def read_labelled(au_type="(r|c)", filename=DATA_PATH):
 		au_samples.append(sample_feat)
 		isBluffing_samples.append(sample_isBluffing)
 	return au_samples, isBluffing_samples
+
+def read_labelled(au_type="(r|c)", filename=DATA_PATH):
+	labelled = pandas.read_csv(filename, sep='\s*,\s*', engine='python')
+	player_out = 0
+
+	#If training set, the rest players stays
+	loso = labelled[labelled.playerId != player_out]
+	loso = loso.reset_index(drop=True)
+	sample_training, isBluff_training = loso_splitter(loso, player_out, au_type, filename)
+
+	#If testing set, one player stays
+	loso = labelled[labelled.playerId == player_out]
+	loso = loso.reset_index(drop=True)
+	sample_testing, isBluff_testing = loso_splitter(loso, player_out, au_type, filename)
+
+	return np.asarray(sample_training), np.asarray(isBluff_training), np.asarray(sample_testing), np.asarray(isBluff_testing)
 
 def split_dataset(x_dataset, y_dataset, ratio):
 	split_idx = int(ratio * len(x_dataset))

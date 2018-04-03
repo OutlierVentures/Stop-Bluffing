@@ -58,8 +58,7 @@ def get_class_weights(y):
 
 
 if __name__ == "__main__":
-	x_dataset, y_dataset = load_labelled.read_labelled()
-	x_train, y_train, x_val, y_val = load_labelled.split_dataset(x_dataset, y_dataset, 0.7)
+	x_train, y_train, x_val, y_val = load_labelled.read_labelled()
 	print("training samples")
 	print(len(x_train))
 	print("validation samples")
