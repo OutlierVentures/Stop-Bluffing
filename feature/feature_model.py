@@ -1,4 +1,5 @@
 from time import time
+from feature import load_labelled
 
 import keras
 from keras import losses
@@ -8,47 +9,8 @@ from keras.layers.core import Permute, Reshape
 from keras import backend as K
 from collections import Counter
 
-from random import randint
-import csv
-import pandas
-import numpy as np
 import matplotlib.pyplot as plt
 import itertools
-
-FRAMES_PER_CLIP = 150
-
-def read_labelled(au_type="(r|c)", filename="labelled.csv"):
-	labelled = pandas.read_csv(filename, sep='\s*,\s*', engine='python')
-
-	player_out = randint(0,5)
-	loso = labelled[labelled.playerId != player_out]
-	loso = loso.reset_index(drop=True)
-
-	au_samples = []
-	isBluffing_samples = []
-	isBluffing_df = loso['isBluffing']
-
-	au_feats = loso.filter(regex = '(confidence)|AU.*_'+au_type, axis=1)
-
-	num_frames = au_feats.shape[0]
-	num_samples = int(num_frames / FRAMES_PER_CLIP)
-
-	for sample_idx in range(num_samples):
-		start_frame = sample_idx * 150
-		end_frame = start_frame + 149
-		sample_feat = au_feats.loc[start_frame:end_frame, :].as_matrix()
-		sample_isBluffing = isBluffing_df.loc[start_frame]
-		au_samples.append(sample_feat)
-		isBluffing_samples.append(sample_isBluffing)
-	return au_samples, isBluffing_samples
-
-def split_dataset(x_dataset, y_dataset, ratio):
-	split_idx = int(ratio * len(x_dataset))
-	x_split0 = np.array(x_dataset[:split_idx])
-	y_split0 = np.array(y_dataset[:split_idx])
-	x_split1 = np.array(x_dataset[split_idx:])
-	y_split1 = np.array(y_dataset[split_idx:])
-	return x_split0, y_split0, x_split1, y_split1
 
 def plot_confusion_matrix(cm, classes,
 						  normalize=False,
@@ -96,8 +58,8 @@ def get_class_weights(y):
 
 
 if __name__ == "__main__":
-	x_dataset, y_dataset = read_labelled()
-	x_train, y_train, x_val, y_val = split_dataset(x_dataset, y_dataset, 0.7)
+	x_dataset, y_dataset = load_labelled.read_labelled()
+	x_train, y_train, x_val, y_val = load_labelled.split_dataset(x_dataset, y_dataset, 0.7)
 	print("training samples")
 	print(len(x_train))
 	print("validation samples")
