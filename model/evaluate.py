@@ -6,7 +6,7 @@ from sklearn.metrics import confusion_matrix
 
 def evaluate(model, x_test, y_test):
     y_pred = model.predict(x_test).flatten()
-    print(y_pred)
+    print('Predictions: ', y_pred)
     y_pred = np.round(y_pred).astype(np.uint8)
 
     cnf_matrix = confusion_matrix(y_test, y_pred)

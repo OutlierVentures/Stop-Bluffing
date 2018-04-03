@@ -10,10 +10,11 @@ def remove_columns(data, col_names):
         data = data.drop(col, axis=1)
     return data
 
-def add_labels(data, labels):
+def add_labels(data, labels, players):
     # initialise column for isBluffing label
     data['isBluffing'] = None
-    data['clip_id'] = None
+    data['clipId'] = None
+    data['playerId'] = None
 
     # set up progress bar
     bar = progressbar.ProgressBar(maxval=data.shape[0], widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()])
@@ -34,7 +35,8 @@ def add_labels(data, labels):
 
                 # assign label
                 data.ix[(FRAMES*count)+i, 'isBluffing'] = label
-                data.ix[(FRAMES*count)+i, 'clip_id'] = idx+1
+                data.ix[(FRAMES*count)+i, 'clipId'] = idx+1
+                data.ix[(FRAMES*count)+i, 'playerId'] = players[idx]
             count += 1
     bar.finish()
     return data
@@ -43,11 +45,12 @@ if __name__ == '__main__':
     # get isBluffing labels
     annotated = pandas.read_csv('annotated_data.csv')
     labels = annotated['isBluffing']
+    players = annotated['playerId']
 
     # load au data -> remove columns that are not needed -> add labels
     au_data = pandas.read_csv('frames.csv')
     au_data = remove_columns(au_data, ['frame',' face_id',' timestamp',' success'])
-    au_data = add_labels(au_data, labels)
+    au_data = add_labels(au_data, labels, players)
 
     # save labelled data
     au_data.to_csv('labelled.csv', sep=',', index=False)
