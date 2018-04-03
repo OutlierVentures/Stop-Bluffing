@@ -7,6 +7,7 @@ from keras.layers import Conv2D, MaxPooling2D, LSTM, Dense, Dropout, Flatten
 from keras.layers.core import Permute, Reshape
 from keras import backend as K
 
+from random import randint
 import csv
 import pandas
 import numpy as np
@@ -17,12 +18,20 @@ FRAMES_PER_CLIP = 150
 
 def read_labelled(au_type="c", filename="labelled.csv"):
 	labelled = pandas.read_csv(filename, sep='\s*,\s*', engine='python')
+
+	player_out = randint(0,5)
+	loso = labelled[labelled.playerId != player_out]
+	loso = loso.reset_index(drop=True)
+
 	au_samples = []
 	isBluffing_samples = []
-	isBluffing_df = labelled['isBluffing']
-	au_feats = labelled.filter(regex = '(confidence)|AU.*_'+au_type, axis=1)
-	num_frames = au_feats.shape[0] 
+	isBluffing_df = loso['isBluffing']
+
+	au_feats = loso.filter(regex = '(confidence)|AU.*_'+au_type, axis=1)
+
+	num_frames = au_feats.shape[0]
 	num_samples = int(num_frames / FRAMES_PER_CLIP)
+
 	for sample_idx in range(num_samples):
 		start_frame = sample_idx * 150
 		end_frame = start_frame + 149
@@ -122,7 +131,7 @@ if __name__ == "__main__":
 	frames, features = x_train[0].shape
 	print(x_train.shape[1:])
 	model = Sequential()
-	
+
 	# model.add(Flatten(input_shape=x_train.shape[1:]))
 	# model.add(Dense(units=1024, activation='relu'))
 	# model.add(Dropout(0.2))
