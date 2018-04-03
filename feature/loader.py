@@ -42,7 +42,7 @@ def load(shuffle=True):
             if frame_idx == 0:
                 y[sample_idx] = row['isBluffing']
 
-            x[sample_idx, frame_idx] = list(row.values())[1:36]
+            x[sample_idx, frame_idx] = list(row.values())[0:36]
 
     # Unison shuffle
     if shuffle:

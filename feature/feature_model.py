@@ -6,6 +6,7 @@ from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D, LSTM, Dense, Dropout, Flatten
 from keras.layers.core import Permute, Reshape
 from keras import backend as K
+from collections import Counter
 
 from random import randint
 import csv
@@ -16,7 +17,7 @@ import itertools
 
 FRAMES_PER_CLIP = 150
 
-def read_labelled(au_type="c", filename="labelled.csv"):
+def read_labelled(au_type="(r|c)", filename="labelled.csv"):
 	labelled = pandas.read_csv(filename, sep='\s*,\s*', engine='python')
 
 	player_out = randint(0,5)
@@ -48,34 +49,6 @@ def split_dataset(x_dataset, y_dataset, ratio):
 	x_split1 = np.array(x_dataset[split_idx:])
 	y_split1 = np.array(y_dataset[split_idx:])
 	return x_split0, y_split0, x_split1, y_split1
-
-def cnn_rnn(input_shape):
-    # nb_frames, nb_landmarks, _ = input_shape
-    model = Sequential()
-    # model.add(Reshape((nb_frames, nb_landmarks * 3), input_shape=input_shape))
-
-    # TODO: Use Conv2D with landmark_idx as channel
-    model.add(Permute((1, 3, 2), input_shape=input_shape))
-    # Kernel_size 5 frames, along single landmark, with 3 corresponding to x,y z<
-    model.add(Conv2D(filters=8, kernel_size=(5, 3),
-                     strides=(2, 1),
-                     padding='same',
-                     activation='relu',
-                     data_format='channels_last'))
-
-    _, a, b, c = model.layers[-1].output_shape
-    model.add(Reshape((a, -1)))  # Flatten
-    model.add(LSTM(1024, return_sequences=True))
-    model.add(BatchNormalization())
-    model.add(LSTM(1024))
-    model.add(BatchNormalization())
-    __add_output__(model)
-
-    return model
-
-
-def __add_output__(model):
-    model.add(Dense(1, activation='sigmoid'))
 
 def plot_confusion_matrix(cm, classes,
 						  normalize=False,
@@ -111,37 +84,40 @@ def plot_confusion_matrix(cm, classes,
 	plt.ylabel('True label')
 	plt.xlabel('Predicted label')
 
+def get_class_weights(y):
+    """
+    Determine class weights based on frequency distribution of labels
+    :param y:
+    :return:
+    """
+    counter = Counter(y)
+    majority = max(counter.values())
+    return {cls: float(majority/count) for cls, count in counter.items()}
 
 
 if __name__ == "__main__":
 	x_dataset, y_dataset = read_labelled()
-	# y_dataset = keras.utils.to_categorical(y_dataset)
-	training_ratio = 0.8
-	validation_ratio = 0.1
-	test_ratio = 0.1
-	x_train, y_train, x_test, y_test = split_dataset(x_dataset, y_dataset, 0.8)
-	x_train, y_train, x_val, y_val = split_dataset(x_train, y_train, 0.9)
+	x_train, y_train, x_val, y_val = split_dataset(x_dataset, y_dataset, 0.7)
 	print("training samples")
 	print(len(x_train))
 	print("validation samples")
 	print(len(x_val))
-	print("test samples")
-	print(len(x_test))
 
 	frames, features = x_train[0].shape
 	print(x_train.shape[1:])
+
+	# # Keras
 	model = Sequential()
+	# # model.add(Flatten(input_shape=x_train.shape[1:]))
+	# # model.add(Dense(units=1024, activation='relu'))
+	# # model.add(Dropout(0.2))
+	# # model.add(Dense(units=1024, activation='relu'))
+	# # model.add(Dropout(0.2))
+	# # model.add(Dense(units=1024, activation='relu'))
+	# # model.add(Dropout(0.2))
+	# # model.add(Dense(1, activation='sigmoid'))
 
-	# model.add(Flatten(input_shape=x_train.shape[1:]))
-	# model.add(Dense(units=1024, activation='relu'))
-	# model.add(Dropout(0.2))
-	# model.add(Dense(units=1024, activation='relu'))
-	# model.add(Dropout(0.2))
-	# model.add(Dense(units=1024, activation='relu'))
-	# model.add(Dropout(0.2))
-	# model.add(Dense(1, activation='sigmoid'))
-
-	# model = cnn_rnn(x_train.shape[1:])
+	# # model = cnn_rnn(x_train.shape[1:])
 	model.add(LSTM(1024, return_sequences=True, input_shape=x_train.shape[1:]))
 	model.add(LSTM(1024, return_sequences=False))
 	model.add(Dense(512,activation='relu'))
@@ -156,36 +132,45 @@ if __name__ == "__main__":
                   metrics=['accuracy'])
 	model.summary()
 
-	training_start = time()
-	print("starting training")
+	# training_start = time()
+	# print("starting training")
 
-	H = model.fit(x_train, y_train,
-				  batch_size=batch_size,
-				  epochs=epochs,
-				  verbose=1,
-				  shuffle=True,
-				  validation_data=(x_val, y_val))
+	# H = model.fit(x_train, y_train,
+	# 			  batch_size=batch_size,
+	# 			  epochs=epochs,
+	# 			  verbose=1,
+	# 			  shuffle=True,
+	# 			  validation_data=(x_val, y_val))
 
-	training_time = time() - training_start
-	print("training finished")
-	model.summary()
+	# training_time = time() - training_start
+	# print("training finished")
+	# model.summary()
 
-	inference_start = time()
-	loss, accuracy = model.evaluate(x=x_test, y=y_test)
-	print(loss, accuracy)
-	from sklearn.metrics import confusion_matrix
-	y_pred = model.predict_classes(x=x_test)
-	con_mat = confusion_matrix(y_test,y_pred)
+	# #SVM
+	# from sklearn import svm
+	# x_train = x_train.reshape(x_train.shape[0], -1)
+	# x_val = x_val.reshape(x_val.shape[0],-1)
+	# model = svm.SVC(class_weight='balanced')
+	# model.fit(x_train, y_train)
 
-	class_names = ['no bluffing','bluffing']
+	# # inference_start = time()
+	# # loss, accuracy = model.evaluate(x=x_val, y=y_val)
+	# # print(loss, accuracy)
+	# from sklearn.metrics import confusion_matrix
+	# # y_pred = model.predict_classes(x=x_val)
+	# y_pred = model.predict(x_val).flatten()
+	# y_pred = np.round(y_pred).astype(np.uint8)
+	# con_mat = confusion_matrix(y_val,y_pred)
+
+	# class_names = ['no bluffing','bluffing']
 
 	# plt.figure()
 	# plot_confusion_matrix(con_mat, classes=class_names,
-	#                       title='Confusion matrix, without normalization')
+	# 					  title='Confusion matrix, without normalization')
 
 	# plt.figure()
 	# plot_confusion_matrix(con_mat, classes=class_names, normalize=True,
-	#                       title='Normalized confusion matrix')
+	# 					  title='Normalized confusion matrix')
 
 	# plt.show()
-	# inference_time = time() - inference_start
+# # inference_time = time() - inference_start
