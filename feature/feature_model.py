@@ -16,12 +16,13 @@ import itertools
 
 FRAMES_PER_CLIP = 150
 
-def read_labelled(au_type="r", filename="labelled.csv"):
+def read_labelled(au_type="(r|c)", filename="labelled.csv"):
 	labelled = pandas.read_csv(filename, sep='\s*,\s*', engine='python')
 	au_samples = []
 	isBluffing_samples = []
 	isBluffing_df = labelled['isBluffing']
 	au_feats = labelled.filter(regex = '(confidence)|AU.*_'+au_type, axis=1)
+	print(au_feats)
 	num_frames = au_feats.shape[0] 
 	num_samples = int(num_frames / FRAMES_PER_CLIP)
 	for sample_idx in range(num_samples):
@@ -97,7 +98,7 @@ if __name__ == "__main__":
 	print(x_train.shape[1:])
 
 	# # Keras
-	# model = Sequential()
+	model = Sequential()
 	# # model.add(Flatten(input_shape=x_train.shape[1:]))
 	# # model.add(Dense(units=1024, activation='relu'))
 	# # model.add(Dropout(0.2))
@@ -108,19 +109,19 @@ if __name__ == "__main__":
 	# # model.add(Dense(1, activation='sigmoid'))
 
 	# # model = cnn_rnn(x_train.shape[1:])
-	# model.add(LSTM(1024, return_sequences=True, input_shape=x_train.shape[1:]))
-	# model.add(LSTM(1024, return_sequences=False))
-	# model.add(Dense(512,activation='relu'))
-	# model.add(Dropout(0.5))
-	# model.add(Dense(1,activation='sigmoid'))
+	model.add(LSTM(1024, return_sequences=True, input_shape=x_train.shape[1:]))
+	model.add(LSTM(1024, return_sequences=False))
+	model.add(Dense(512,activation='relu'))
+	model.add(Dropout(0.5))
+	model.add(Dense(1,activation='sigmoid'))
 
-	# epochs = 5
-	# batch_size = 32
+	epochs = 5
+	batch_size = 32
 
-	# model.compile(optimizer='adam',
- #                  loss=losses.binary_crossentropy,
- #                  metrics=['accuracy'])
-	# model.summary()
+	model.compile(optimizer='adam',
+                  loss=losses.binary_crossentropy,
+                  metrics=['accuracy'])
+	model.summary()
 
 	# training_start = time()
 	# print("starting training")
@@ -136,31 +137,31 @@ if __name__ == "__main__":
 	# print("training finished")
 	# model.summary()
 
-	#SVM
-	from sklearn import svm
-	x_train = x_train.reshape(x_train.shape[0], -1)
-	x_val = x_val.reshape(x_val.shape[0],-1)
-	model = svm.SVC(class_weight='balanced')
-	model.fit(x_train, y_train)
+	# #SVM
+	# from sklearn import svm
+	# x_train = x_train.reshape(x_train.shape[0], -1)
+	# x_val = x_val.reshape(x_val.shape[0],-1)
+	# model = svm.SVC(class_weight='balanced')
+	# model.fit(x_train, y_train)
 
-	# inference_start = time()
-	# loss, accuracy = model.evaluate(x=x_val, y=y_val)
-	# print(loss, accuracy)
-	from sklearn.metrics import confusion_matrix
-	# y_pred = model.predict_classes(x=x_val)
-	y_pred = model.predict(x_val).flatten()
-	y_pred = np.round(y_pred).astype(np.uint8)
-	con_mat = confusion_matrix(y_val,y_pred)
+	# # inference_start = time()
+	# # loss, accuracy = model.evaluate(x=x_val, y=y_val)
+	# # print(loss, accuracy)
+	# from sklearn.metrics import confusion_matrix
+	# # y_pred = model.predict_classes(x=x_val)
+	# y_pred = model.predict(x_val).flatten()
+	# y_pred = np.round(y_pred).astype(np.uint8)
+	# con_mat = confusion_matrix(y_val,y_pred)
 
-	class_names = ['no bluffing','bluffing']
+	# class_names = ['no bluffing','bluffing']
 
-	plt.figure()
-	plot_confusion_matrix(con_mat, classes=class_names,
-						  title='Confusion matrix, without normalization')
+	# plt.figure()
+	# plot_confusion_matrix(con_mat, classes=class_names,
+	# 					  title='Confusion matrix, without normalization')
 
-	plt.figure()
-	plot_confusion_matrix(con_mat, classes=class_names, normalize=True,
-						  title='Normalized confusion matrix')
+	# plt.figure()
+	# plot_confusion_matrix(con_mat, classes=class_names, normalize=True,
+	# 					  title='Normalized confusion matrix')
 
-	plt.show()
-	# inference_time = time() - inference_start
+	# plt.show()
+	# # inference_time = time() - inference_start
