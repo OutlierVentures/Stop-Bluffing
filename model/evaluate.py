@@ -6,11 +6,12 @@ from sklearn.metrics import confusion_matrix, classification_report
 def evaluate(model, x_test, y_test):
     y_pred = model.predict(x_test).flatten()
 
-    print(classification_report(y_test, y_pred))
 
     print('Predictions: ', y_pred)
     y_pred = np.round(y_pred).astype(np.uint8)
 
+    print(classification_report(y_test, y_pred))
+    
     cnf_matrix = confusion_matrix(y_test, y_pred)
 
     f, (ax1, ax2) = plt.subplots(1, 2)
