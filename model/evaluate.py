@@ -1,11 +1,13 @@
 import itertools
 import matplotlib.pyplot as plt
 import numpy as np
-from sklearn.metrics import confusion_matrix
-
+from sklearn.metrics import confusion_matrix, classification_report
 
 def evaluate(model, x_test, y_test):
     y_pred = model.predict(x_test).flatten()
+
+    print(classification_report(y_test, y_pred))
+
     print('Predictions: ', y_pred)
     y_pred = np.round(y_pred).astype(np.uint8)
 
