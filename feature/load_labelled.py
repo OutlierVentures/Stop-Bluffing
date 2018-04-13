@@ -26,9 +26,8 @@ def loso_splitter(loso, player_out, au_type, filename):
 		isBluffing_samples.append(sample_isBluffing)
 	return au_samples, isBluffing_samples
 
-def read_labelled(au_type="(r|c)", filename=DATA_PATH):
+def read_labelled(player_out=0, au_type="(r|c)", filename=DATA_PATH):
 	labelled = pandas.read_csv(filename, sep='\s*,\s*', engine='python')
-	player_out = 0
 
 	#If training set, the rest players stays
 	loso = labelled[labelled.playerId != player_out]
