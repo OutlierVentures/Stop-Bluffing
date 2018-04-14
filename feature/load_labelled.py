@@ -12,7 +12,7 @@ def loso_splitter(loso, player_out, au_type, filename):
 	isBluffing_samples = []
 	isBluffing_df = loso['isBluffing']
 
-	au_feats = loso.filter(regex = '(confidence)|AU.*_'+au_type, axis=1)
+	au_feats = loso.filter(regex = 'AU.*_'+au_type, axis=1)
 
 	num_frames = au_feats.shape[0]
 	num_samples = int(num_frames / FRAMES_PER_CLIP)
@@ -24,6 +24,7 @@ def loso_splitter(loso, player_out, au_type, filename):
 		sample_isBluffing = isBluffing_df.loc[start_frame]
 		au_samples.append(sample_feat)
 		isBluffing_samples.append(sample_isBluffing)
+
 	return au_samples, isBluffing_samples
 
 def read_labelled(player_out=0, au_type="(r|c)", filename=DATA_PATH):
