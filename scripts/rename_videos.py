@@ -1,9 +1,9 @@
 """
 Script for renaming Game 1 Round 1.mov to G1R1.mov
 """
-import os
 import argparse
 import glob
+import os
 import re
 
 parser = argparse.ArgumentParser()

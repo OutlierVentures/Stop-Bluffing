@@ -2,6 +2,7 @@
 Load featured-based data
 """
 import csv
+
 import numpy as np
 
 DATA_PATH = 'data/labelled_au.csv'
