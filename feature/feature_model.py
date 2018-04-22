@@ -1,7 +1,7 @@
 import itertools
-from collections import Counter
-
+import numpy as np
 import matplotlib.pyplot as plt
+from collections import Counter
 from keras import losses
 from keras.layers import LSTM, Dense, Dropout
 from keras.models import Sequential
