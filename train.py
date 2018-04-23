@@ -1,3 +1,10 @@
+"""
+Train model which uses facial geometry as input
+
+```
+python train.py [model]
+```
+"""
 import argparse
 from collections import Counter
 from keras import losses
