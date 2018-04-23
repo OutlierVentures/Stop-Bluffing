@@ -18,6 +18,21 @@ TODO:
 
 ### Training
 
+To train the SVM model:
+```
+python -m feature.svm
+```
+
+To train the neural network models:
+```
+python -m feature.keras_models [model]
+```
+
+The [model] argument can be 'mlp' or 'rnn', for example:
+```
+python -m feature.keras_models mlp
+```
+
 ## Facial Geometry Model
 
 Our other model attempted to use only the coordinates of the subject's facial geometry.
