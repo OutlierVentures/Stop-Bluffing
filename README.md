@@ -16,19 +16,19 @@ The Facial Action Coding System (Ekman et al., 2002) breaks facial geometry into
 An AU is movement of a muscle or group of muscles. For example, AU10 is the raising of the upper lip.
 AUs are scored by intensity and can encode almost any anatomically possible facial expression.
 
-Full guide by Ekman et al.: bit.do/facs-full
+Full guide by Ekman et al.: https://bit.do/facs-full
 
-Summary: bit.do/facs-summary
+Summary: https://bit.do/facs-summary
 
 ### Extracting action units
 
 Extraction is done using Openface (Baltrušaitis et al., 2016).
 
 We recommend using Windows. We had success with MacOS and Ubuntu but configuring components is considerably more challenging.
-For MacOS see bit.do/openface-mac and for other UNIX systems see bit.do/openface-unix.
+For MacOS see https://bit.do/openface-mac and for other UNIX systems see https://bit.do/openface-unix.
 
 Instructions for Windows:
-*Requires Visual Studio 2015 **without updates** (bit.do/openface-vs) and C++ Redistributable 2015 (bit.do/openface-cpp).*
+*Requires Visual Studio 2015 **without updates** (https://bit.do/openface-vs) and C++ Redistributable 2015 (https://bit.do/openface-cpp).*
 
 Download all required binaries with this link: https://github.com/TadasBaltrusaitis/OpenFace/releases/download/OpenFace_v1.0.0/OpenFace_v1.0.0_win_x64.zip
 
