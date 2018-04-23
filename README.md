@@ -14,8 +14,10 @@ E.g. the video of player 2 in game 1 round 2 would be located at `data/videos/2/
 
 The Facial Action Coding System (Ekman et al., 2002) breaks facial geometry into smaller parts and encodes how these change over time ('Action Units' (AUs)).
 An AU is movement of a muscle or group of muscles. For example, AU10 is the raising of the upper lip.
-AUs are scored by intesnity and can encode almost any anatomically possible facial expression.
+AUs are scored by intensity and can encode almost any anatomically possible facial expression.
+
 Full guide by Ekman et al.: bit.do/facs-full
+
 Summary: bit.do/facs-summary
 
 ### Extracting action units
@@ -26,9 +28,10 @@ We recommend using Windows. We had success with MacOS and Ubuntu but configuring
 For MacOS see bit.do/openface-mac and for other UNIX systems see bit.do/openface-unix.
 
 Instructions for Windows:
-Requires Visual Studio 2015 **without updates** (bit.do/openface-vs) and C++ Redistributable 2015 (bit.do/openface-cpp).
+*Requires Visual Studio 2015 **without updates** (bit.do/openface-vs) and C++ Redistributable 2015 (bit.do/openface-cpp).*
 
 Download all required binaries with this link: https://github.com/TadasBaltrusaitis/OpenFace/releases/download/OpenFace_v1.0.0/OpenFace_v1.0.0_win_x64.zip
+
 Clone OpenFace into your repository:
 ```
 git clone https://github.com/TadasBaltrusaitis/OpenFace.git
@@ -36,7 +39,7 @@ git clone https://github.com/TadasBaltrusaitis/OpenFace.git
 
 Open OpenFace.sln with Visual Studio 2015 and run OpenFaceOffline.
 In the menu, set recorded data to AUs only.
-Open your seclected files and run OpenFace.
+Open your selected files and run OpenFace.
 
 Outputs are saved as a CSV.
 In the header, a suffix of *c* denotes classification data and a suffix of *r* denotes regression data.
