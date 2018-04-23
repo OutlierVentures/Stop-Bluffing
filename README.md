@@ -27,7 +27,8 @@ Extraction is done using Openface (Baltrušaitis et al., 2016).
 We recommend using Windows. We had success with MacOS and Ubuntu but configuring components is considerably more challenging.
 For MacOS see https://bit.do/openface-mac and for other UNIX systems see https://bit.do/openface-unix.
 
-Instructions for Windows:
+# Instructions for Windows
+
 *Requires Visual Studio 2015 **without updates** (https://bit.do/openface-vs) and C++ Redistributable 2015 (https://bit.do/openface-cpp).*
 
 Download all required binaries with this link: https://github.com/TadasBaltrusaitis/OpenFace/releases/download/OpenFace_v1.0.0/OpenFace_v1.0.0_win_x64.zip
