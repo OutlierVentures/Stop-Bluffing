@@ -31,7 +31,7 @@ For MacOS see https://bit.do/openface-mac and for other UNIX systems see https:/
 
 *Requires Visual Studio 2015 **without updates** (https://bit.do/openface-vs) and Visual C++ Redistributable 2015 (https://bit.do/openface-cpp).*
 
-Download the required binaries with this link: http://bit.do/openface-bins
+Download the required binaries here: http://bit.do/openface-bins
 
 Clone OpenFace into your repository:
 ```
