@@ -1,8 +1,8 @@
-# Stop-Bluffing
+# Stop Bluffing
 
-Machine Learning model for detecting bluffing in a Poker game.
+A machine learning model for detecting unfelt emotions in video data.
 
-A mini project part of UCL's Affective Computing and Human Robot Interaction course. 
+This repo has been forked from a research project originally created for detecting bluffing in poker games.
 
 ## Prepare Data
 
