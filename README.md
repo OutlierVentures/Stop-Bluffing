@@ -1,16 +1,21 @@
 # Stop Bluffing
 
-A machine learning model for detecting unfelt emotions in video data.
+Machine learning models for detecting unfelt emotions in video data.
 
 This repo has been forked from a research project originally created for detecting bluffing in poker games.
 
-## Prepare Data
+## Training Data & Preparation
 
-Place videos in `data/videos/{playerId}`. Video filenames should have the format `G{gameId}R{roundId}`.
+Training data should be single 'reaction' events of 150 frames, i.e. 2.5 seconds at 60 frames per second (called a 'round'). A set of reactions in a given conversation flow (a 'game') can be recorded as a set of videos.
 
-E.g. the video of player 2 in game 1 round 2 would be located at `data/videos/2/G1R2.mov`.
+File names should have the format `G{gameId}R{roundId}` and should use the .mov extension. Place videos in `data/videos/{personId}`.
 
-## Facial Action Unit Model
+For example: a video of player 3 in game 2, round 1 should be stored in `data/videos/3/G2R1.mov`.
+
+There is a FACS-based and facial-geometry-based model. The FACS model lends itself better to smaller data sets.
+
+
+## FACS Model
 
 The Facial Action Coding System (Ekman et al., 2002) breaks facial geometry into smaller parts and encodes how these change over time ('Action Units' (AUs)).
 An AU is movement of a muscle or group of muscles. For example, AU10 is the raising of the upper lip.
