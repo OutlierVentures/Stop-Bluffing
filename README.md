@@ -4,7 +4,22 @@ Machine learning models for detecting unfelt emotions in video data.
 
 This repo has been forked from a research project originally created for detecting bluffing in poker games.
 
-## Training Data & Preparation
+## Training Data
+
+### Available Datasets
+
+Should you chose not to record your own data, there are two relevant datasets available.
+
+#### Extended Cohn-Kande Dataset (CK+)
+
+The [CK+ dataset](http://consortium.ri.cmu.edu/ckagree/) contains video data for both posed and spontaneous expressions. Emotions have validated labels.
+
+Posed expressions were recorded by asking participants to express a specific emotion without a stimulus. The spontaneous expressions were taken from expressions that occured without a prompt during the course of task, e.g. as a result of conversations with the researchers.
+
+Spontaneous expressions in CK+ are limited to smiles alone. Use of this dataset may lead to a weighting bias favouring the geometry of and surrounding the mouth.
+
+
+### Preparation
 
 Training data should be single 'reaction' events of 150 frames, i.e. 2.5 seconds at 60 frames per second (called a 'round'). A set of reactions in a given conversation flow (a 'game') can be recorded as a set of videos.
 
