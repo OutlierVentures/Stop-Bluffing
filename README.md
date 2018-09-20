@@ -8,7 +8,13 @@ This repo has been forked from a research project originally created for detecti
 
 ### Available Datasets
 
-Should you chose not to record your own data, there are two relevant datasets available.
+Should you chose not to record your own data, there are a few relevant datasets available.
+
+#### SASE-FE Dataset
+
+The [SASE-FE dataset](https://icv.tuit.ut.ee/sase-fe-database.html) contains video data for 50 participants. There are 12 videos of each participant representing 6 basic emotions (anger, happiness, sadness, disgust, contempt, surprise), both expressing genuine and unfelt emotions.
+
+Elicitation of genuine emotions was achieved by showing participants videos intended to induce the relevant affective state. For false expressions, participants were asked to display an emotion different to the one intended to be elicited by the video.
 
 #### Extended Cohn-Kande Dataset (CK+)
 
@@ -17,6 +23,12 @@ The [CK+ dataset](http://consortium.ri.cmu.edu/ckagree/) contains video data for
 Posed expressions were recorded by asking participants to express a specific emotion without a stimulus. The spontaneous expressions were taken from expressions that occured without a prompt during the course of task, e.g. as a result of conversations with the researchers.
 
 Spontaneous expressions in CK+ are limited to smiles alone. Use of this dataset may lead to a weighting bias favouring the geometry of and surrounding the mouth.
+
+#### Oulu-CASIA NIR-VIS Dataset
+
+The [Oulu-CASIA dataset](http://www.cse.oulu.fi/CMV/Downloads/Oulu-CASIA) is a set of posed expressions. Participants were asked to mimic example expressions displayed on a screen (six variants: surprise, happiness, sadness, anger, fear and disgust).
+
+The benefit of the Oulu-CASIA dataset is that there are a range of lighting conditions available.
 
 
 ### Preparation
